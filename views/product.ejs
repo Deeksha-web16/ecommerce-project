@@ -1,0 +1,31 @@
+<%- include("partials/header") %>
+
+<div class="container" style="min-height: 80vh; display: flex; justify-content: center; align-items: center; padding: 40px 0;">
+
+  <div class="product-detail" style="display: flex; flex-wrap: wrap; gap: 40px; width: 100%; max-width: 1200px;">
+
+    <!-- Product Image -->
+    <div class="product-image" style="flex: 1 1 500px; text-align: center; max-width: 500px; max-height: 500px;">
+      <img src="<%= product.image || '/images/placeholder.png' %>" 
+           alt="<%= product.title %>" 
+           style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+    </div>
+
+    <!-- Product Info -->
+    <div class="product-info" style="flex: 1 1 400px; display: flex; flex-direction: column; justify-content: flex-start; color: #fff;">
+      <h1 style="margin-bottom: 20px; font-size: 2rem;"><%= product.title %></h1>
+      <h2 style="margin-bottom: 20px; color: #e50914; font-size: 1.5rem;">₹<%= product.price %></h2>
+      <p style="margin-bottom: 30px; line-height: 1.5; font-size: 1rem;"><%= product.description %></p>
+
+      <!-- Add to Cart Form -->
+      <form action="/cart/add/<%= product._id %>" method="POST" style="display: flex; align-items: center; gap: 10px;">
+        <label for="qty">Quantity:</label>
+        <input type="number" name="qty" id="qty" value="1" min="1" style="width: 70px; padding: 5px; border-radius: 5px; border: none;">
+        <button type="submit" class="btn-primary" style="padding: 10px 20px;">Add to Cart</button>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<%- include("partials/footer") %>

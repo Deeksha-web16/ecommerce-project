@@ -1,0 +1,27 @@
+<%- include('partials/header') %>
+<section class="orders">
+  <h2>My Orders</h2>
+  <% if (notifs && notifs.length) { %>
+    <div class="alerts">
+      <% notifs.forEach(function(n){ %>
+        <div class="alert"><%= n %></div>
+      <% }) %>
+    </div>
+  <% } %>
+  <% if (!orders.length) { %>
+    <p>No orders yet. <a href="/">Shop now</a></p>
+  <% } else { %>
+    <% orders.forEach(function(o){ %>
+      <div class="order-card">
+        <h3>Order: <%= o._id %></h3>
+        <p>Total: ₹<%= o.total %> • Payment: <%= o.paymentMethod %> • Status: <%= o.paymentStatus %></p>
+        <ul>
+          <% o.items.forEach(function(it){ %>
+            <li><%= it.qty %> x ₹<%= it.price %> — <%= it.product ? it.product.title : 'product' %></li>
+          <% }) %>
+        </ul>
+      </div>
+    <% }) %>
+  <% } %>
+</section>
+<%- include('partials/footer') %>

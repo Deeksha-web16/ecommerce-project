@@ -1,0 +1,38 @@
+<%- include("partials/header") %>
+
+<div class="container">
+  <!-- Hero Banner -->
+  <section class="hero">
+    <h1>Welcome to <span style="color:#e50914;">E-Shop</span></h1>
+    <p>Beautiful, simple e-commerce demo — explore products below.</p>
+  </section>
+
+  <!-- Featured Products -->
+  <h2 style="margin-top:30px;">Featured Products</h2>
+
+  <% if (products && products.length > 0) { %>
+    <div class="product-grid">
+      <% products.forEach(function(p) { %>
+        <div class="product-card">
+          <!-- Product image -->
+          <img src="<%= p.image ? p.image : 'https://via.placeholder.com/200x150.png?text=Product' %>" 
+               alt="<%= p.title %>">
+          <!-- Product title and price -->
+          <h3><%= p.title %></h3>
+          <p>₹<%= p.price %></p>
+
+          <!-- Buttons -->
+          <a href="/product/<%= p._id %>" class="btn-secondary">View Details</a>
+          <form action="/cart/add/<%= p._id %>" method="POST" style="margin-top:10px;">
+            <input type="hidden" name="qty" value="1">
+            <button type="submit" class="btn-primary">Add to Cart</button>
+          </form>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <p>No products found. Please check back later.</p>
+  <% } %>
+</div>
+
+<%- include("partials/footer") %>

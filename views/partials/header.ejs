@@ -1,0 +1,26 @@
+<header class="site-header">
+  <!-- Announcement bar -->
+  <marquee class="sale">
+    🔥 Welcome to Our E-commerce Store — Free Delivery on orders above ₹1999!
+  </marquee>
+
+  <!-- Navigation bar -->
+  <div class="top-bar">
+    <div class="logo">E-<span>Shop</span></div>
+    <nav class="nav">
+      <a href="/"><i class="fas fa-home"></i> Home</a>
+      <a href="/cart"><i class="fas fa-shopping-cart"></i> Cart (<%= cartCount || 0 %>)</a>
+      <% if (!user) { %>
+        <a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="/register"><i class="fas fa-user-plus"></i> Register</a>
+      <% } else { %>
+        <a href="/orders"><i class="fas fa-box"></i> My Orders</a>
+        <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+      <% } %>
+    </nav>
+  </div>
+</header>
+
+<!-- FontAwesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="/css/style.css" />

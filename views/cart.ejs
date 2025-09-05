@@ -1,0 +1,49 @@
+<%- include("partials/header") %>
+
+<div class="container">
+  <h2>Your Cart</h2>
+
+  <% if (cart && cart.length > 0) { %>
+    <table class="cart-table" style="width: 100%; border-collapse: collapse; table-layout: fixed; text-align: center;">
+      <thead>
+        <tr>
+          <th style="width: 30%;">Product</th>
+          <th style="width: 15%;">Price</th>
+          <th style="width: 15%;">Quantity</th>
+          <th style="width: 15%;">Total</th>
+          <th style="width: 25%;">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% cart.forEach(function(item) { %>
+          <tr>
+            <td><%= item.title %></td>
+            <td>₹<%= item.price %></td>
+            <td>
+              <form action="/cart/update/<%= item.id %>" method="POST" style="display:flex; justify-content:center; gap:5px;">
+                <input type="number" name="qty" value="<%= item.qty %>" min="1" style="width:60px; padding: 5px; border-radius: 5px; border: 1px solid #ccc;">
+                <button type="submit" class="btn-primary" style="padding: 5px 10px;">Update</button>
+              </form>
+            </td>
+            <td>₹<%= item.price * item.qty %></td>
+            <td>
+              <form action="/cart/remove/<%= item.id %>" method="POST">
+                <button type="submit" class="btn-danger" style="padding: 5px 10px;">Remove</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top: 20px; text-align: right;">Total: ₹<%= total %></h3>
+    <div style="text-align: right; margin-top: 10px;">
+      <a href="/checkout" class="btn-primary" style="padding: 10px 20px;">Proceed to Checkout</a>
+    </div>
+
+  <% } else { %>
+    <p>Your cart is empty.</p>
+  <% } %>
+</div>
+
+<%- include("partials/footer") %>
