@@ -37,8 +37,14 @@
     </table>
 
     <h3 style="margin-top: 20px; text-align: right;">Total: ₹<%= total %></h3>
+
     <div style="text-align: right; margin-top: 10px;">
-      <a href="/checkout" class="btn-primary" style="padding: 10px 20px;">Proceed to Checkout</a>
+      <form action="/checkout" method="POST" style="display:inline;">
+        <!-- Default values for address/paymentMethod -->
+        <input type="hidden" name="address" value="Default Address">
+        <input type="hidden" name="paymentMethod" value="COD">
+        <button type="submit" class="btn-primary" style="padding: 10px 20px;">Proceed to Checkout</button>
+      </form>
     </div>
 
   <% } else { %>

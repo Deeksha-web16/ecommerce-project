@@ -138,44 +138,6 @@ router.get('/cart', (req, res) => {
   });
 });
 
-// Checkout (create order) - requires login
-router.post('/checkout', ensureLoggedIn, async (req, res) => {
-  const { address, paymentMethod } = req.body;
-  const cart = req.session.cart || [];
-  if (cart.length === 0) return res.redirect('/cart');
-
-  const items = cart.map((it) => ({
-    product: it.id,
-    qty: it.qty,
-    price: it.price
-  }));
-  const total = cart.reduce((s, it) => s + it.price * it.qty, 0);
-
-  const order = new Order({
-    user: req.session.user.id,
-    items,
-    total,
-    address,
-    paymentMethod,
-    paymentStatus: paymentMethod === 'COD' ? 'pending' : 'paid'
-  });
-  await order.save();
-
-  // Add notification to user
-  const user = await User.findById(req.session.user.id);
-  user.notifications.push(
-    `Order placed successfully. Order ID: ${order._id}`
-  );
-  await user.save();
-
-  // Clear cart & add server-side notification
-  req.session.cart = [];
-  req.session.notifications = req.session.notifications || [];
-  req.session.notifications.push('Order placed successfully.');
-
-  res.redirect('/orders');
-});
-
 // View my orders
 router.get('/orders', ensureLoggedIn, async (req, res) => {
   const orders = await Order.find({ user: req.session.user.id }).populate(
@@ -189,6 +151,62 @@ router.get('/orders', ensureLoggedIn, async (req, res) => {
     user: req.session.user,
     cartCount: getCartCount(req.session.cart)
   });
+});
+
+router.post('/checkout', ensureLoggedIn, async (req, res) => {
+  try {
+    const { address, paymentMethod } = req.body;
+    const cart = req.session.cart || [];
+
+    // Check if cart is empty
+    if (cart.length === 0) {
+      req.session.notifications = ['Your cart is empty.'];
+      return res.redirect('/cart');
+    }
+
+    // Validate input
+    if (!address || !paymentMethod) {
+      req.session.notifications = ['Please enter address and select payment method.'];
+      return res.redirect('/cart');
+    }
+
+    // Prepare order items
+    const items = cart.map(it => ({
+      product: it.id,
+      qty: it.qty,
+      price: it.price
+    }));
+
+    const total = cart.reduce((sum, it) => sum + it.price * it.qty, 0);
+
+    // Save order
+    const order = new Order({
+      user: req.session.user.id,
+      items,
+      total,
+      address,
+      paymentMethod,
+      paymentStatus: paymentMethod === 'COD' ? 'pending' : 'paid'
+    });
+    await order.save();
+
+    // Add notification to user
+    const user = await User.findById(req.session.user.id);
+    user.notifications.push(`Order placed successfully. Order ID: ${order._id}`);
+    await user.save();
+
+    // Clear cart & session notifications
+    req.session.cart = [];
+    req.session.notifications = req.session.notifications || [];
+    req.session.notifications.push('Order placed successfully.');
+
+    res.redirect('/orders');
+
+  } catch (err) {
+    console.error('Checkout Error:', err);
+    req.session.notifications = ['Something went wrong during checkout.'];
+    res.redirect('/cart');
+  }
 });
 
 module.exports = router;
